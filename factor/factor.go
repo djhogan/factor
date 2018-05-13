@@ -1,19 +1,26 @@
 package factor
 
+// Factor type
+// FwdMap maps unique string values to an int index.
+// BwdMap maps int indices to unique string values.
+// Column is the encoded vector.
 type Factor struct {
 	FwdMap map[string]int
 	BwdMap []string
 	Column []int
 }
 
+// Number of unique values.
 func (f Factor) ULen() int {
 	return len(f.BwdMap)
 }
 
+// Number of values.
 func (f Factor) Len() int {
 	return len(f.Column)
 }
 
+// Get the unencoded value at index i.
 func (f Factor) Value(i int) string {
 	return f.BwdMap[f.Column[i]]
 }
@@ -24,18 +31,17 @@ func NewFactor() Factor {
 	return f
 }
 
-func ToFactor(ss []string) *Factor {
+func ToFactor(ss []string) Factor {
 	var f Factor
-	f.FwdMap = make(map[string]int)
-	f.BwdMap = make([]string, 0)
+	f = NewFactor()
 	f.Column = make([]int, 0, len(ss))
 	for _, s := range ss {
 		f.Append(s)
 	}
-	return &f
+	return f
 }
 
-func (f *Factor) Append(s string) {
+func (f Factor) Append(s string) {
 	idx, ok := f.FwdMap[s]
 	if !ok {
 		idx = len(f.BwdMap)
